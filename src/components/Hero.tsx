@@ -7,7 +7,6 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 import { OpenBadge } from "./OpenBadge";
-import { SITE } from "@/data/site";
 import { DURATION, EASE_OUT, STAGGER } from "@/lib/motion";
 
 gsap.registerPlugin(useGSAP, SplitText);
@@ -190,11 +189,9 @@ export function Hero() {
       </div>
 
       <div className="container-x flex flex-1 flex-col">
-        {/* Top meta */}
-        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
-          <p data-hero-fade className="kicker opacity-0">
-            {SITE.address.street} · {SITE.address.district} · {SITE.address.city}
-          </p>
+        {/* Top meta — the open/closed state only. The address belongs to Find Us
+            and the footer; repeating it here just crowded the opening frame. */}
+        <div className="flex flex-wrap items-center justify-end gap-x-6 gap-y-2">
           <div data-hero-fade className="opacity-0">
             <OpenBadge />
           </div>
