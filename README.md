@@ -95,6 +95,22 @@ Playwright, at 375 / 768 / 1440, both routes:
 - All four Day Arc chapters settle to a single readable text block
 - `next build` clean, both routes statically prerendered; ESLint and `tsc` clean
 
+## If the lockfile breaks CI
+
+`package-lock.json` is generated with all platforms resolved:
+
+```bash
+npm install --package-lock-only --os=linux --cpu=x64
+```
+
+Without that, npm on macOS writes a placeholder for one of sharp's optional
+Linux binaries — `node_modules/sharp/node_modules/@img/sharp-linux-arm64` with
+`{"optional": true}` and no `version`. Locally nothing notices, because that
+binary is never installed on a Mac. On a Linux CI runner npm reads the entry,
+finds no version, and dies with `npm error Invalid Version:` before the build
+starts. If a plain `npm install` ever reintroduces it, regenerate with the
+command above and check for entries without a version.
+
 ## Before launch
 
 1. **Confirm the prices.** `src/data/menu.ts` is transcribed from the house's own
