@@ -23,6 +23,9 @@ export function Nav() {
 
   return (
     <header
+      // data-* hooks are read by tools/singlefile-runtime.js, which reproduces
+      // this behaviour in the portable one-file export.
+      data-nav
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ease-out ${
         lifted
           ? "border-b border-white/8 bg-ink/85 backdrop-blur-xl"

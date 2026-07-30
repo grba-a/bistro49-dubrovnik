@@ -48,6 +48,7 @@ export function MenuNav() {
             <li key={section.id} className="shrink-0 md:shrink">
               <a
                 href={`#${section.id}`}
+                data-menu-link={section.id}
                 aria-current={on ? "true" : undefined}
                 className={`pressable block rounded-full px-3 py-1.5 font-mono text-[0.625rem] tracking-[0.16em] whitespace-nowrap uppercase md:rounded-none md:border-l md:px-4 md:py-2.5 ${
                   on

@@ -23,6 +23,7 @@ export function StickyBar() {
 
   return (
     <div
+      data-sticky-bar
       className={`fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-ink/92 backdrop-blur-xl transition-transform duration-300 ease-out md:hidden motion-reduce:transition-none ${
         show ? "translate-y-0" : "translate-y-full"
       }`}

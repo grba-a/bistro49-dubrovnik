@@ -24,6 +24,7 @@ export function OpenBadge({ className = "" }: { className?: string }) {
 
   return (
     <div
+      data-open-badge
       className={`flex min-h-6 items-center gap-2.5 ${className}`}
       aria-live="polite"
     >

@@ -95,6 +95,30 @@ Playwright, at 375 / 768 / 1440, both routes:
 - All four Day Arc chapters settle to a single readable text block
 - `next build` clean, both routes statically prerendered; ESLint and `tsc` clean
 
+## One-file version, for sending around
+
+```bash
+npm run build:singlefile     # → dist/bistro49-dubrovnik.html
+```
+
+Produces a single ~5 MB HTML file that opens by double-clicking: no server, no
+internet, no build step. Styles, all three typefaces, every photograph and the
+scripts are inlined, and both routes ship as two views toggled in-page, so
+internal links still work.
+
+It stays **editable**: the markup is the real semantic HTML and
+`tools/singlefile-runtime.js` is a readable vanilla port of the components'
+motion, not a minified React bundle. Copy can be changed in any text editor —
+search for the sentence and edit it.
+
+Two deliberate differences from the deployed site: the OpenStreetMap iframe
+becomes a static card (a live iframe would hang offline), and photographs are
+re-encoded at 1600px / q68 to keep the file emailable.
+
+`tools/build-singlefile.mjs` documents the three things that quietly break this
+kind of export — the second stylesheet that holds `@font-face`, the generated
+font class on `<html>`, and the map's `invert()` wrapper.
+
 ## If the lockfile breaks CI
 
 `package-lock.json` is generated with all platforms resolved:

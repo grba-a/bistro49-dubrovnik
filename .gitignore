@@ -42,3 +42,7 @@ next-env.d.ts
 
 # editor / agent tooling
 .claude/
+
+# single-file export artifacts
+/dist
+/.next-singlefile
