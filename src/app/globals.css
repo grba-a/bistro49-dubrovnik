@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Bistro 49 — "Harbour Night"
+   Brand values sampled from the client's own site (getComputedStyle), not invented:
+   the B49 badge / interior neon mint is rgb(106,192,179) and the dark surface
+   they already use is #191D1E.
+   ========================================================================== */
+
+@theme {
+  /* Palette */
+  --color-ink: #08090a;
+  --color-surface: #191d1e;
+  --color-surface-2: #22282a;
+  --color-mint: #6ac0b3;
+  --color-mint-bright: #7fd8c9;
+  --color-amber: #e0a356;
+  --color-bone: #edeae4;
+  --color-muted: #9ba3a2;
+
+  /* Type */
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-instrument);
+  --font-mono: var(--font-jetbrains);
+
+  /* Motion — built-in CSS easings are too weak; these have the punch. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+@layer base {
+  html {
+    /* Lenis drives scrolling; native smooth would fight it. */
+    scroll-behavior: auto;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-bone);
+    font-family: var(--font-sans), system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-mint);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-mint);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  /* Mono micro-label above a big display line. The Pinterest refs all do this. */
+  .kicker {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-mint);
+  }
+
+  /* Tabular figures so prices and times never shift width. */
+  .numeric {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  /* Anything pressable: instant feedback, never layout-shifting. */
+  .pressable {
+    transition:
+      transform 160ms var(--ease-out),
+      background-color 200ms ease,
+      color 200ms ease,
+      border-color 200ms ease;
+  }
+
+  .pressable:active {
+    transform: scale(0.97);
+  }
+}
+
+@utility container-x {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 90rem;
+  padding-inline: 1.25rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 2.5rem;
+  }
+
+  @media (width >= 80rem) {
+    padding-inline: 4rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reveal primitives. GSAP animates these; CSS owns the pre-animation state so
+   nothing flashes unstyled before hydration. `.js-ready` is set on <html> once
+   the client mounts — without JS everything stays visible and readable.
+   -------------------------------------------------------------------------- */
+.js-ready [data-reveal] {
+  opacity: 0;
+}
+
+.js-ready [data-clip] {
+  clip-path: inset(0 0 100% 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Reduced motion means fewer, gentler animations — not broken layout.
+     Movement is dropped; opacity fades that aid comprehension stay. */
+  .js-ready [data-clip] {
+    clip-path: none !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+}
