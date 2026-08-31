@@ -57,8 +57,10 @@ export default function Home() {
         <Hero />
         <Manifesto />
         <DayArc />
-        <Signature />
+        {/* The night follows dinner: the Day Arc ends at Bistronomy (18:00),
+            so live music picks up from there rather than after the dishes. */}
         <Nights />
+        <Signature />
         <Gallery />
         <Proof />
         <FindUs />
