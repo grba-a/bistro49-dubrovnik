@@ -1,5 +1,6 @@
 import { OpenBadge } from "./OpenBadge";
 import { SITE } from "@/data/site";
+import { BookButton } from "./booking/BookButton";
 
 /**
  * One primary action per screen. Booking is the primary; calling is secondary,
@@ -31,16 +32,20 @@ export function Reserve() {
           </div>
 
           <div className="flex flex-col gap-4 md:col-span-4 md:col-start-9 md:justify-end">
-            <a
-              href="https://www.opentable.com/"
-              target="_blank"
-              rel="noreferrer"
-              data-reveal
-              className="pressable flex items-center justify-between gap-4 rounded-full bg-mint px-7 py-4 font-mono text-[0.6875rem] tracking-[0.18em] text-ink uppercase hover:bg-mint-bright"
-            >
-              Book a table
-              <span aria-hidden>→</span>
-            </a>
+            {/* This used to point at opentable.com — the generic homepage,
+                where Bistro 49 has no listing, so the primary conversion on the
+                page led nowhere. It opens the booking dialog now. With
+                JavaScript off it falls back to the phone, which is the thing
+                the button was standing in for all along. */}
+            <div data-reveal>
+              <BookButton
+                href={SITE.phone.href}
+                className="pressable flex items-center justify-between gap-4 rounded-full bg-mint px-7 py-4 font-mono text-[0.6875rem] tracking-[0.18em] text-ink uppercase hover:bg-mint-bright"
+              >
+                Book a table
+                <span aria-hidden>→</span>
+              </BookButton>
+            </div>
 
             <a
               href={SITE.phone.href}
