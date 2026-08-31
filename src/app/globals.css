@@ -30,8 +30,9 @@
 
 @layer base {
   html {
-    /* Lenis drives scrolling; native smooth would fight it. */
-    scroll-behavior: auto;
+    /* Native scrolling, no library. `smooth` here only affects anchor jumps —
+       the wheel and the thumb stay exactly as the browser made them. */
+    scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -142,5 +143,366 @@
 
   html {
     scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   The booking dialog.
+
+   Native <dialog>, so the focus trap, Escape and the inert page behind it come
+   from the browser rather than from three hundred lines of JavaScript. What is
+   left here is the shape: a sheet off the bottom edge of a phone, where the
+   thumb already is, and a panel in the middle of the harbour night from 40rem.
+   -------------------------------------------------------------------------- */
+
+/* The page holds still behind an open dialog. */
+html[data-dialog-open],
+html[data-dialog-open] body {
+  overflow: hidden;
+}
+
+.booking-dialog {
+  /* A dialog arrives with a UA margin, border, padding and a max-width of
+     `calc(100% - 6px - 2em)`. All four have to go before it can be a sheet. */
+  margin: 0;
+  padding: 0;
+  border: 0;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  background: transparent;
+  color: var(--color-bone);
+  overflow: hidden;
+}
+
+.booking-dialog[open] {
+  display: grid;
+  /* Bottom of the screen on a phone, middle of it on anything larger. */
+  place-items: end center;
+}
+
+.booking-dialog::backdrop {
+  /* The ink value, written out: custom properties do not reliably reach
+     ::backdrop across the browsers this site is read in. Blur is a bonus on
+     top of an already-opaque wash, never the thing doing the work. */
+  background-color: rgb(8 9 10 / 0.78);
+  backdrop-filter: blur(6px);
+}
+
+.booking-panel {
+  position: relative;
+  width: 100%;
+  max-height: 92dvh;
+  overflow-y: auto;
+  /* Scrolling to the end of the form must not start scrolling the page. */
+  overscroll-behavior: contain;
+  background-color: var(--color-surface);
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 0.5rem 0.5rem 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  /* Offset and blur, so the sheet sits above the page rather than being
+     outlined onto it. */
+  box-shadow: 0 -20px 60px -12px rgb(0 0 0 / 0.65);
+}
+
+/* A fieldset carries `min-width: min-content` from the UA sheet, which no
+   reset overrides. It is why the time rail refused to scroll and stretched the
+   whole sheet to 2288px instead: the fieldset would not shrink below the width
+   of all thirty-one chips laid end to end. */
+.booking-panel fieldset {
+  min-width: 0;
+}
+
+/* The form is tall enough to scroll, so the title and the way out stay put. */
+.booking-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+}
+
+/* The one authored moment: a light coming on along the counter as the sheet
+   lands. Nothing else in the dialog animates in — the fields are simply there. */
+.booking-horizon {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-mint) 45%,
+    var(--color-mint) 55%,
+    transparent
+  );
+  transform-origin: center;
+}
+
+.booking-dialog[open] .booking-horizon {
+  animation: b49-horizon 820ms var(--ease-out) both;
+}
+
+@keyframes b49-horizon {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@media (width >= 40rem) {
+  .booking-dialog[open] {
+    place-items: center;
+  }
+
+  .booking-panel {
+    max-width: 34rem;
+    max-height: min(90dvh, 48rem);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: 0.375rem;
+    box-shadow: 0 32px 80px -24px rgb(0 0 0 / 0.8);
+  }
+}
+
+.booking-dialog[open]::backdrop {
+  animation: b49-backdrop-in 240ms ease both;
+}
+
+.booking-dialog[open] .booking-panel {
+  animation: b49-sheet-in 360ms var(--ease-out) both;
+}
+
+@media (width >= 40rem) {
+  .booking-dialog[open] .booking-panel {
+    animation: b49-panel-in 320ms var(--ease-out) both;
+  }
+}
+
+@keyframes b49-backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes b49-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes b49-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .booking-dialog[open]::backdrop,
+  .booking-dialog[open] .booking-panel,
+  .booking-dialog[open] .booking-horizon {
+    animation: none;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Form controls. Only ever seen inside the dialog, so they are written for a
+   dark panel rather than as a general-purpose set.
+   -------------------------------------------------------------------------- */
+
+.field-label {
+  display: block;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  /* Muted on surface measures 6.6:1 — a label, not a whisper. */
+  color: var(--color-muted);
+}
+
+.field {
+  width: 100%;
+  min-height: 3rem;
+  margin-top: 0.5rem;
+  padding: 0.6875rem 0.875rem;
+  background-color: var(--color-ink);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 0.25rem;
+  color: var(--color-bone);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  /* 16px exactly. Below it, iOS Safari zooms the page on focus and never
+     zooms back out, which leaves the sheet wider than the screen. */
+  font-size: 1rem;
+  line-height: 1.4;
+  /* Renders the native date picker and the caret for a dark panel. */
+  color-scheme: dark;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease;
+}
+
+.field::placeholder {
+  color: color-mix(in oklab, var(--color-muted) 78%, transparent);
+}
+
+.field:hover {
+  border-color: rgb(255 255 255 / 0.24);
+}
+
+.field:focus {
+  border-color: var(--color-mint);
+  outline: none;
+}
+
+.field:focus-visible {
+  outline: 2px solid var(--color-mint);
+  outline-offset: 2px;
+}
+
+.field[aria-invalid="true"] {
+  border-color: var(--color-amber);
+}
+
+/* Date inputs are centred and unpadded by default on iOS. */
+input.field[type="date"] {
+  appearance: none;
+  -webkit-appearance: none;
+  text-align: left;
+}
+
+select.field {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ba3a2' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  background-size: 1rem;
+}
+
+textarea.field {
+  min-height: 5.25rem;
+  resize: vertical;
+}
+
+/* Amber rather than a red from nowhere: it is already in the palette, and it
+   reads as a note to fix rather than as a failure. The words carry the meaning
+   in any case, so nothing here depends on the colour being seen. */
+.field-error {
+  margin-top: 0.5rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: var(--color-amber);
+}
+
+/* Every choice in the form is the same object: a chip you tap. Day, time,
+   party size and room all read as one system rather than as four widgets. */
+.chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding-inline: 0.75rem;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 9999px;
+  background-color: var(--color-ink);
+  color: var(--color-muted);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    transform 160ms var(--ease-out);
+}
+
+.chip:hover {
+  border-color: rgb(255 255 255 / 0.3);
+  color: var(--color-bone);
+}
+
+.chip:active {
+  transform: scale(0.96);
+}
+
+.chip-on {
+  background-color: var(--color-mint);
+  border-color: var(--color-mint);
+  color: var(--color-ink);
+}
+
+.chip-on:hover {
+  background-color: var(--color-mint-bright);
+  border-color: var(--color-mint-bright);
+  color: var(--color-ink);
+}
+
+.chip:disabled,
+.chip[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* The radio inside a chip is visually hidden, so its focus ring is borrowed. */
+.chip:has(input:focus-visible),
+.chip:focus-visible {
+  outline: 2px solid var(--color-mint);
+  outline-offset: 2px;
+}
+
+/* Thirty-one half-hours will not fit on a phone, and a dropdown of them is a
+   scroll wheel. They lie on a rail instead, opened at dinner, and the edges
+   fade so it is obvious the row continues. */
+.chip-rail {
+  /* Positioned so a chip's `offsetLeft` is measured against the rail rather
+     than against the panel — which is what the open-at-dinner scroll reads. */
+  position: relative;
+  min-width: 0;
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  scroll-behavior: auto;
+  scrollbar-width: none;
+  /* Room for the focus ring, which would otherwise be clipped by the mask. */
+  padding-block: 0.25rem;
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 1.25rem,
+    #000 calc(100% - 1.25rem),
+    transparent
+  );
+}
+
+.chip-rail::-webkit-scrollbar {
+  display: none;
+}
+
+/* The line under the rail: which of the four services that hour actually is.
+   The site's whole argument, restated at the moment somebody picks a time.
+   On a phone two lines are reserved so the form does not jump as the wording
+   changes length between one service and the next; on a wider panel every one
+   of the four fits on a single line, and reserving the second leaves a hole. */
+@media (width < 40rem) {
+  .service-line {
+    min-height: 3.25rem;
   }
 }

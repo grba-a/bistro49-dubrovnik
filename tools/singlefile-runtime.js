@@ -121,25 +121,11 @@
   }
 
   /* ---------------------------------------------------------------------
-     Smooth scroll — Lenis driven by GSAP's ticker so ScrollTrigger and Lenis
-     advance on the same frame. Skipped entirely under reduced motion.
+     Scrolling — the browser's own. The smooth-scroll library that used to sit
+     here was removed from the site, and this export mirrors the site.
      --------------------------------------------------------------------- */
-  var lenis = null;
   function scrollTo(y, immediate) {
-    if (lenis) lenis.scrollTo(y, { immediate: !!immediate });
-    else window.scrollTo(0, y);
-  }
-
-  if (!reduced) {
-    lenis = new Lenis({
-      autoRaf: false,
-      duration: 1.15,
-      easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
-      touchMultiplier: 1.6,
-    });
-    lenis.on("scroll", ScrollTrigger.update);
-    gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
-    gsap.ticker.lagSmoothing(0);
+    window.scrollTo({ top: y, behavior: immediate || reduced ? "auto" : "smooth" });
   }
 
   /* ---------------------------------------------------------------------

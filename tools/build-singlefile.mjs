@@ -184,11 +184,10 @@ for (const href of cssHrefs) {
   fontCount += inlined.count;
 }
 
-const [gsapJs, scrollTriggerJs, splitTextJs, lenisJs, runtimeJs] = await Promise.all([
+const [gsapJs, scrollTriggerJs, splitTextJs, runtimeJs] = await Promise.all([
   read(join(root, "node_modules/gsap/dist/gsap.min.js")),
   read(join(root, "node_modules/gsap/dist/ScrollTrigger.min.js")),
   read(join(root, "node_modules/gsap/dist/SplitText.min.js")),
-  read(join(root, "node_modules/lenis/dist/lenis.min.js")),
   read(join(here, "singlefile-runtime.js")),
 ]);
 
@@ -230,7 +229,6 @@ ${jsonLd ? `<script type="application/ld+json">${jsonLd}</script>` : ""}
 <script>${gsapJs}</script>
 <script>${scrollTriggerJs}</script>
 <script>${splitTextJs}</script>
-<script>${lenisJs}</script>
 <script>${runtimeJs}</script>
 </body>
 </html>

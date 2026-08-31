@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Footer } from "@/components/Footer";
 import { MenuNav } from "@/components/MenuNav";
 import { Nav } from "@/components/Nav";
@@ -7,7 +6,8 @@ import { OpenBadge } from "@/components/OpenBadge";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { StickyBar } from "@/components/StickyBar";
 import { MENU, SERVICES, type DietTag } from "@/data/menu";
-import { SITE } from "@/data/site";
+import { PRICES, SITE } from "@/data/site";
+import { BookButton } from "@/components/booking/BookButton";
 
 export const metadata: Metadata = {
   title: "Menu",
@@ -136,12 +136,18 @@ export default function MenuPage() {
                           )}
                         </div>
 
-                        {/* Tabular figures keep the price column dead straight. */}
+                        {/* Tabular figures keep the price column dead
+                            straight — and the column stays even when the
+                            numbers are switched off, holding a mark instead.
+                            A menu whose right-hand edge simply vanishes reads
+                            as a page that failed to load. */}
                         <p className="numeric shrink-0 text-sm text-bone md:text-base">
-                          {item.price === "—" ? (
-                            <span className="text-muted">—</span>
-                          ) : (
+                          {PRICES.shown && item.price !== "—" ? (
                             <>€ {item.price}</>
+                          ) : (
+                            <span className="text-muted">
+                              {PRICES.placeholder}
+                            </span>
                           )}
                         </p>
                       </li>
@@ -168,18 +174,20 @@ export default function MenuPage() {
                     Burgers are cooked medium rare unless you ask for well done.
                   </li>
                   <li>
-                    Prices are for guidance and may change with the season.
+                    {PRICES.shown
+                      ? "Prices are for guidance and may change with the season."
+                      : PRICES.note}
                   </li>
                 </ul>
               </div>
 
               <div className="mt-12 flex flex-wrap items-center gap-4">
-                <Link
+                <BookButton
                   href="/#reserve"
                   className="pressable rounded-full bg-mint px-6 py-3 font-mono text-[0.6875rem] tracking-[0.18em] text-ink uppercase hover:bg-mint-bright"
                 >
                   Book a table
-                </Link>
+                </BookButton>
                 <a
                   href={SITE.phone.href}
                   className="pressable rounded-full border border-white/20 px-6 py-3 font-mono text-[0.6875rem] tracking-[0.18em] text-bone uppercase hover:border-mint hover:text-mint"

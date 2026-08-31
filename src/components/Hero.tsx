@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 import { OpenBadge } from "./OpenBadge";
+import { BookButton } from "./booking/BookButton";
 import { DURATION, EASE_OUT, STAGGER } from "@/lib/motion";
 
 gsap.registerPlugin(useGSAP, SplitText);
@@ -263,13 +264,15 @@ export function Hero() {
           </p>
 
           <div className="flex flex-wrap items-center gap-3 md:col-span-5 md:col-start-8 md:justify-end">
-            <Link
+            {/* `data-hero-fade` has to stay on this element: GSAP selects it
+                and fades it up from the `opacity-0` it starts at. */}
+            <BookButton
               href="#reserve"
               data-hero-fade
               className="pressable rounded-full bg-mint px-6 py-3 font-mono text-[0.6875rem] tracking-[0.18em] text-ink uppercase opacity-0 hover:bg-mint-bright"
             >
               Book a table
-            </Link>
+            </BookButton>
             <Link
               href="/menu"
               data-hero-fade

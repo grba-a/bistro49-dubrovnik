@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Instrument_Sans, JetBrains_Mono } from "next/font/google";
 import { SmoothScroll } from "@/lib/smooth-scroll";
+import { BookingProvider } from "@/components/booking/BookingProvider";
 import "./globals.css";
 
 /* Display: Fraunces is warm and a little idiosyncratic — a family bistro, not a
@@ -78,7 +79,11 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        <SmoothScroll>{children}</SmoothScroll>
+        <SmoothScroll>
+          {/* One booking dialog for the whole site; every "Book a table"
+              anywhere in the tree opens this instance. */}
+          <BookingProvider>{children}</BookingProvider>
+        </SmoothScroll>
       </body>
     </html>
   );

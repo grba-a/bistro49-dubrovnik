@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { BookButton } from "./booking/BookButton";
 
 const LINKS = [
   { href: "/#day", label: "The Day" },
@@ -70,12 +71,14 @@ export function Nav() {
           >
             Menu
           </Link>
-          <Link
+          {/* Opens the booking dialog. The href is the no-JavaScript
+              fallback: the reserve section, which carries the phone number. */}
+          <BookButton
             href="/#reserve"
             className="pressable hidden rounded-full bg-mint px-5 py-2.5 font-mono text-[0.625rem] tracking-[0.18em] text-ink uppercase hover:bg-mint-bright md:inline-flex"
           >
             Book a table
-          </Link>
+          </BookButton>
         </div>
       </div>
     </header>

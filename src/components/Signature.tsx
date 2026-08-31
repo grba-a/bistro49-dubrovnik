@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { SIGNATURES } from "@/data/dishes";
+import { PRICES } from "@/data/site";
 import { Section } from "./Section";
 
 /**
@@ -42,9 +43,14 @@ export function Signature() {
                       <span className="kicker text-muted">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      <span className="numeric text-sm text-mint">
-                        € {dish.price}
-                      </span>
+                      {/* Editorial, not a ledger: with prices switched off
+                          the number goes rather than leaving a dash floating
+                          beside the counter. */}
+                      {PRICES.shown && (
+                        <span className="numeric text-sm text-mint">
+                          € {dish.price}
+                        </span>
+                      )}
                     </div>
 
                     <h3
