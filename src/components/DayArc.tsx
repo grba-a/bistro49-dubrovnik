@@ -140,7 +140,14 @@ export function DayArc() {
                   src={c.image}
                   alt={c.alt}
                   fill
-                  sizes="100vw"
+                  /* Each variant declares the width it actually occupies at
+                     each breakpoint. The desktop panel is full-bleed from
+                     768px up and `display: none` below it, so claiming a bare
+                     "100vw" makes Next compare 100vw against a measured zero
+                     and warn. Saying so explicitly keeps the desktop request
+                     full-size and silences a warning that was describing the
+                     hidden state, not a real over-fetch. */
+                  sizes="(min-width: 768px) 100vw, 1px"
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-ink/72" />
@@ -212,7 +219,7 @@ export function DayArc() {
                   /* The mobile card sits inside the gutters, so it is never a
                      full viewport wide — claiming 100vw makes Next serve a
                      needlessly large file. */
-                  sizes="92vw"
+                  sizes="(max-width: 767px) 92vw, 1px"
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-ink/25" />
