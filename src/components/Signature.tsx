@@ -36,37 +36,55 @@ export function Signature() {
                     flip ? "md:flex-row-reverse" : ""
                   }`}
                 >
-                  {/* The name, oversized. `min-w-0` lets it shrink instead of
-                      forcing the row wider than the viewport. */}
+                  {/* The name, oversized. `min-w-0` lets the flex-1 column
+                      shrink instead of forcing the row wider than the
+                      viewport — this outer box still spans the full width up
+                      to the image on every row, so the image stays flush with
+                      the row's far edge regardless of how long the dish name
+                      is.
+
+                      The inner wrapper is what actually carries the visible
+                      content, and it's capped and (on flipped rows) pushed to
+                      the far edge with `md:ml-auto`. Without it, a flip row's
+                      text sits in a column whose *near* edge (left, against
+                      the image) is where left-aligned text naturally starts —
+                      so the type ends up touching the photo instead of
+                      standing the same distance from it as on a normal row,
+                      where the near edge (right, against the image) is the
+                      side text never reaches. Same box, opposite side. */}
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline gap-4">
-                      <span className="kicker text-muted">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      {/* Editorial, not a ledger: with prices switched off
-                          the number goes rather than leaving a dash floating
-                          beside the counter. */}
-                      {PRICES.shown && (
-                        <span className="numeric text-sm text-mint">
-                          € {dish.price}
+                    <div
+                      className={`md:max-w-[42rem] ${flip ? "md:ml-auto" : ""}`}
+                    >
+                      <div className="flex items-baseline gap-4">
+                        <span className="kicker text-muted">
+                          {String(i + 1).padStart(2, "0")}
                         </span>
-                      )}
+                        {/* Editorial, not a ledger: with prices switched off
+                            the number goes rather than leaving a dash floating
+                            beside the counter. */}
+                        {PRICES.shown && (
+                          <span className="numeric text-sm text-mint">
+                            € {dish.price}
+                          </span>
+                        )}
+                      </div>
+
+                      <h3
+                        data-reveal
+                        className="mt-3 leading-[0.92] text-bone"
+                        style={{ fontSize: "clamp(2rem, 5.2vw, 4.5rem)" }}
+                      >
+                        {dish.name}
+                      </h3>
+
+                      <p
+                        data-reveal
+                        className="mt-4 max-w-md text-[0.9375rem] leading-relaxed text-muted"
+                      >
+                        {dish.note}
+                      </p>
                     </div>
-
-                    <h3
-                      data-reveal
-                      className="mt-3 leading-[0.92] text-bone"
-                      style={{ fontSize: "clamp(2rem, 5.2vw, 4.5rem)" }}
-                    >
-                      {dish.name}
-                    </h3>
-
-                    <p
-                      data-reveal
-                      className="mt-4 max-w-md text-[0.9375rem] leading-relaxed text-muted"
-                    >
-                      {dish.note}
-                    </p>
                   </div>
 
                   {/* The plate. Negative margin on desktop pulls it over the
